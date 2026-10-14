@@ -3,15 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
 
-class OnboardingScreenFive extends StatefulWidget {
-  const OnboardingScreenFive({super.key});
+import 'package:provider/provider.dart';
+import 'package:flutter_nivasshub/services/country/country_service_base.dart';
+
+import 'login_screen.dart';
+import 'dummy_account_screen.dart';
+
+class OnboardingScreen extends StatefulWidget {
+  const OnboardingScreen({super.key});
 
   @override
-  State<OnboardingScreenFive> createState() =>
-      _OnboardingScreenFiveState();
+  State<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
-class _OnboardingScreenFiveState extends State<OnboardingScreenFive> {
+class _OnboardingScreenState extends State<OnboardingScreen> {
   static const Color navy = Color(0xFF0E2543);
   static const Color orange = Color(0xFFFC7118);
 
@@ -22,7 +27,6 @@ class _OnboardingScreenFiveState extends State<OnboardingScreenFive> {
   void initState() {
     super.initState();
 
-    // Edge-to-edge rendering.
     SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.edgeToEdge,
     );
@@ -63,6 +67,29 @@ class _OnboardingScreenFiveState extends State<OnboardingScreenFive> {
     }
   }
 
+  void _openLogin() {
+    Navigator.push(
+      context,
+      MaterialPageRoute<void>(
+        builder: (routeContext) {
+          return Provider<CountryServiceBase>.value(
+            value: context.read<CountryServiceBase>(),
+            child: const LoginScreen(),
+          );
+        }
+      ),
+    );
+  }
+
+  void _openDummyAccount() {
+    Navigator.push(
+      context,
+      MaterialPageRoute<void>(
+        builder: (_) => const DummyAccountScreen(),
+      ),
+    );
+  }
+
   @override
   void dispose() {
     _videoController.dispose();
@@ -101,10 +128,8 @@ class _OnboardingScreenFiveState extends State<OnboardingScreenFive> {
                                 fit: BoxFit.cover,
                                 alignment: Alignment.bottomCenter,
                                 child: SizedBox(
-                                  width:
-                                      _videoController.value.size.width,
-                                  height:
-                                      _videoController.value.size.height,
+                                  width: _videoController.value.size.width,
+                                  height: _videoController.value.size.height,
                                   child: VideoPlayer(_videoController),
                                 ),
                               ),
@@ -190,14 +215,12 @@ class _OnboardingScreenFiveState extends State<OnboardingScreenFive> {
 
                   // Create Account button.
                   Positioned(
-                    left: 29,      
+                    left: 29,
                     top: 583,
                     width: 382,
                     height: 56,
                     child: ElevatedButton(
-                      onPressed: () {
-                        // Connect to the existing registration route later.
-                      },
+                      onPressed: _openDummyAccount,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: orange,
                         foregroundColor: const Color(0xFFF1F8FF),
@@ -251,9 +274,7 @@ class _OnboardingScreenFiveState extends State<OnboardingScreenFive> {
                     width: 382,
                     height: 55,
                     child: OutlinedButton(
-                      onPressed: () {
-                        // Connect to the existing login route later.
-                      },
+                      onPressed: _openLogin,
                       style: OutlinedButton.styleFrom(
                         backgroundColor: Colors.white,
                         foregroundColor: orange,

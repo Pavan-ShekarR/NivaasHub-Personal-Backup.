@@ -1,24 +1,28 @@
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class OnboardingScreenTwo extends StatefulWidget {
-  const OnboardingScreenTwo({super.key});
+import 'onboarding_screen.dart';
+
+class WelcomeScreen extends StatefulWidget {
+  const WelcomeScreen({super.key});
 
   @override
-  State<OnboardingScreenTwo> createState() =>
-      _OnboardingScreenTwoState();
+  State<WelcomeScreen> createState() => _WelcomeScreenState();
 }
 
-class _OnboardingScreenTwoState extends State<OnboardingScreenTwo> {
+class _WelcomeScreenState extends State<WelcomeScreen> {
   static const Color backgroundColor = Color(0xFFF9FFFB);
   static const Color navy = Color(0xFF0E2543);
+
+  Timer? _navigationTimer;
 
   @override
   void initState() {
     super.initState();
 
-    // Allow the screen to draw behind Android system bars.
     SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.edgeToEdge,
     );
@@ -33,6 +37,30 @@ class _OnboardingScreenTwoState extends State<OnboardingScreenTwo> {
         systemNavigationBarContrastEnforced: false,
       ),
     );
+
+    _navigationTimer = Timer(
+      const Duration(seconds: 5),
+      () {
+        if (!mounted) return;
+
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (_) => _buildNextScreen(),
+          ),
+        );
+      },
+    );
+  }
+
+  // Uses the onboarding screen widget from your project.
+  Widget _buildNextScreen() {
+    return OnboardingScreen();
+  }
+
+  @override
+  void dispose() {
+    _navigationTimer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -50,13 +78,10 @@ class _OnboardingScreenTwoState extends State<OnboardingScreenTwo> {
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  // Full-canvas background.
                   const ColoredBox(
                     color: backgroundColor,
                   ),
 
-                  // Background illustration.
-                  // Original opacity is preserved.
                   Positioned(
                     left: -40,
                     right: -40,
@@ -72,7 +97,6 @@ class _OnboardingScreenTwoState extends State<OnboardingScreenTwo> {
                     ),
                   ),
 
-                  // NivaasHub stacked logo.
                   Positioned(
                     left: 39,
                     top: 77,
@@ -84,7 +108,6 @@ class _OnboardingScreenTwoState extends State<OnboardingScreenTwo> {
                     ),
                   ),
 
-                  // Welcome heading.
                   const Positioned(
                     left: 116,
                     top: 425,
@@ -103,7 +126,6 @@ class _OnboardingScreenTwoState extends State<OnboardingScreenTwo> {
                     ),
                   ),
 
-                  // NivaasHub heading.
                   const Positioned(
                     left: 72,
                     top: 482,
